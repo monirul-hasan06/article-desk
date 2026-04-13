@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Article Desk - where thoughts find readers.</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #fafafc;
+            color: #1a1a2e;
+            line-height: 1.6;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+
+        body.dark {
+            background: #121212;
+            color: #e8e8ec;
+        }
+
+        body.dark .card,
+        body.dark .sidebar,
+        body.dark .modal-content,
+        body.dark .hero,
+        body.dark header,
+        body.dark footer {
+            background: #1e1e2a;
+            border-color: #2d2d3a;
+            color: #e8e8ec;
+        }
+
+        body.dark .card h3,
+        body.dark .card p,
+        body.dark .sidebar strong,
+        body.dark .hero h2,
+        body.dark .hero p,
+        body.dark .modal-content h2,
+        body.dark .modal-content p,
+        body.dark .article-body {
+            color: #f0f0f4;
+        }
+
+        body.dark .card-meta,
+        body.dark .login-prompt,
+        body.dark .comment {
+            color: #b0b0bc;
+        }
+
+        body.dark .tag {
+            background: #2d2d3a;
+            color: #d0d0dc;
+        }
+
+        body.dark input,
+        body.dark textarea,
+        body.dark select {
+            background: #2a2a36;
+            border-color: #3d3d4a;
+            color: #f0f0f4;
+        }
+
+        body.dark button:not(.btn-primary) {
+            background: #2a2a36;
+            border-color: #3d3d4a;
+            color: #e8e8ec;
+        }
+
+        body.dark button:hover:not(.btn-primary) {
+            background: #3a3a48;
+        }
+
+        body.dark .filter-chip {
+            background: #2a2a36;
+            color: #e0e0e8;
+        }
+
+        body.dark .filter-chip.active {
+            background: #ffffff;
+            color: #121212;
+        }
+
+        body.dark .action-btn:hover {
+            background: #2d2d3a;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        header {
+            background: #ffffff;
+            border-bottom: 1px solid #e8e8ec;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            background-color: rgba(255,255,255,0.95);
+            transition: all 0.2s;
+        }
+
+        body.dark header {
+            background: #1a1a26;
+            border-bottom-color: #2d2d3a;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .logo h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            color: #1e1e2f;
+        }
+
+        body.dark .logo h1 {
+            color: #ffffff;
+        }
+
+        .logo p {
+            font-size: 0.75rem;
+            color: #6b6b7a;
+            letter-spacing: 0.3px;
+        }
+
+        body.dark .logo p {
+            color: #a0a0b0;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        button, .btn {
+            background: #ffffff;
+            border: 1px solid #d4d4dc;
+            padding: 8px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            color: #1a1a2e;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #1a1a2e;
+            border-color: #1a1a2e;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2d2d44;
+        }
+
+        button:hover {
+            background: #f0f0f4;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 48px 20px 32px;
+            background: #f5f5f9;
+            border-radius: 24px;
+            margin: 32px 0;
+            transition: all 0.2s;
+        }
+
+        .hero h2 {
+            font-size: 2rem;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+            margin-bottom: 12px;
+        }
+
+        .articles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 28px;
+            margin: 40px 0;
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 16px;
+            border: 1px solid #eef0f2;
+            overflow: hidden;
+            padding: 24px;
+            transition: box-shadow 0.2s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+        }
+
+        .card:hover {
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+        }
+
+        .card h3 {
+            font-size: 1.35rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+
+        .card-meta {
+            display: flex;
+            gap: 16px;
+            font-size: 0.75rem;
+            color: #6b6b7a;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+        }
+
+        .card-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 14px 0;
+        }
+
+        .tag {
+            background: #f0f0f4;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+
+        .sidebar {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 24px;
+            border: 1px solid #eef0f2;
+            margin-bottom: 24px;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 32px;
+        }
+
+        @media (max-width: 768px) {
+            .two-column { grid-template-columns: 1fr; }
+            .hero h2 { font-size: 1.6rem; }
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            border: 1px solid #e2e2e8;
+            background: #ffffff;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
+        .filter-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 16px 0;
+        }
+
+        .filter-chip {
+            background: #f5f5f9;
+            padding: 6px 16px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+
+        .filter-chip.active {
+            background: #1a1a2e;
+            color: white;
+        }
+
+        body.dark .filter-chip.active {
+            background: #ffffff;
+            color: #121212;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: #ffffff;
+            max-width: 700px;
+            width: 90%;
+            max-height: 85vh;
+            overflow-y: auto;
+            border-radius: 24px;
+            padding: 32px;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 12px 14px;
+            margin: 8px 0 16px;
+            border-radius: 12px;
+            border: 1px solid #d4d4dc;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 24px;
+            margin-top: 48px;
+            border-top: 1px solid #eef0f2;
+            background: #ffffff;
+            font-size: 0.8rem;
+        }
+
+        .full-article-modal .modal-content {
+            max-width: 780px;
+            padding: 40px 48px;
+        }
+
+        .article-body {
+            font-size: 1.05rem;
+            line-height: 1.7;
+            margin: 24px 0;
+            white-space: pre-wrap;
+        }
+
+        .article-actions {
+            display: flex;
+            gap: 20px;
+            margin: 28px 0 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eef0f2;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #4a4a5a;
+            cursor: pointer;
+            padding: 6px 12px;
+            border-radius: 40px;
+        }
+
+        .action-btn:hover {
+            background: #f0f0f4;
+        }
+
+        .liked {
+            color: #e74c3c;
+        }
+
+        .comments-section {
+            margin-top: 28px;
+        }
+
+        .comment {
+            background: #fafafc;
+            padding: 12px 16px;
+            border-radius: 16px;
+            margin-bottom: 12px;
+            font-size: 0.9rem;
+        }
+
+        .copy-toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a1a2e;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            z-index: 1100;
+        }
+
+        .login-prompt {
+            font-size: 0.8rem;
+            color: #6b6b7a;
+            margin-top: 12px;
+        }
+
+        .user-greeting {
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .category-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            border-bottom: 1px solid #eef0f2;
+        }
+
+        .admin-article-row {
+            border: 1px solid #eef0f2;
+            margin: 12px 0;
+            padding: 16px;
+            border-radius: 12px;
+            background: #fefefe;
+        }
+
+        body.dark .admin-article-row {
+            background: #2a2a36;
+            border-color: #3d3d4a;
+        }
+
+        .admin-article-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .admin-article-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="container">
+        <div class="header-content">
+            <div class="logo">
+                <h1 id="siteTitle">Article Desk</h1>
+                <p id="siteTagline">where thoughts find readers.</p>
+            </div>
+            <div class="nav-buttons">
+                <span id="userDisplay" class="user-greeting"></span>
+                <button id="darkModeToggle"><i class="fas fa-moon"></i> Dark</button>
+                <button id="authBtn">Sign In</button>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="container">
+    <div class="hero" id="heroSection">
+        <h2 id="heroTitle">Read. Reflect. Connect.</h2>
+        <p id="heroSubtitle">Insights on psychology, relationships, and self-improvement — written for deep thinking.</p>
+        <button id="browseAllBtn" class="btn-primary" style="margin-top: 20px;">Browse Articles</button>
+    </div>
+
+    <div class="two-column">
+        <main>
+            <div id="articlesList">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+                    <h2>All Articles</h2>
+                    <div style="display: flex; gap: 12px;">
+                        <button id="createArticleBtn" class="btn-outline"><i class="fas fa-pen"></i> Write Article</button>
+                        <button id="adminPanelBtn" class="btn-outline"><i class="fas fa-lock"></i> Admin</button>
+                    </div>
+                </div>
+                <div id="categoryFilters" class="filter-buttons"></div>
+                <div id="articlesGrid" class="articles-grid"></div>
+            </div>
+        </main>
+
+        <aside>
+            <div class="sidebar">
+                <i class="fas fa-search"></i> Search
+                <input type="text" id="searchInput" class="search-input" placeholder="Search by title or content...">
+            </div>
+            <div class="sidebar">
+                <strong>Categories</strong>
+                <div id="sidebarCategories" class="filter-buttons"></div>
+            </div>
+            <div class="sidebar">
+                <strong>Popular Topics</strong>
+                <div id="sidebarTags" class="filter-buttons"></div>
+            </div>
+            <div class="sidebar">
+                <strong>Recent Reads</strong>
+                <ul id="recentList" style="list-style: none; margin-top: 12px;"></ul>
+            </div>
+        </aside>
+    </div>
+</div>
+
+<footer>
+    <p id="footerText">Article Desk — where thoughts find readers. 2025</p>
+</footer>
+
+<!-- Auth Modal -->
+<div id="authModal" class="modal">
+    <div class="modal-content">
+        <h2 id="authTitle">Sign In</h2>
+        <input type="text" id="authUsername" placeholder="Username" autocomplete="off">
+        <input type="password" id="authPassword" placeholder="Password">
+        <button id="authSubmitBtn" class="btn-primary">Sign In</button>
+        <p id="authSwitchText" style="margin-top: 16px; text-align: center; cursor: pointer; color: #4a6fa5;">Create an account</p>
+        <button id="closeAuthBtn" style="margin-top: 12px;">Cancel</button>
+    </div>
+</div>
+
+<!-- Article Editor Modal -->
+<div id="editorModal" class="modal">
+    <div class="modal-content">
+        <h2 id="editorTitle">Create New Article</h2>
+        <input type="text" id="articleTitle" placeholder="Article Title">
+        <select id="articleCategory"></select>
+        <input type="text" id="articleTags" placeholder="Tags (comma separated, e.g. love, boundaries)">
+        <textarea id="articleContent" rows="8" placeholder="Write your article content here..."></textarea>
+        <button id="saveArticleBtn" class="btn-primary">Publish Article</button>
+        <button id="cancelEditorBtn">Cancel</button>
+    </div>
+</div>
+
+<!-- Admin Panel Modal - Full Website Control -->
+<div id="adminModal" class="modal">
+    <div class="modal-content">
+        <h2>Admin Control Panel</h2>
+        <div id="adminLoginDiv">
+            <input type="password" id="adminPass" placeholder="Admin Password">
+            <button id="adminLoginBtn">Login as Admin</button>
+        </div>
+        <div id="adminDashboardDiv" style="display:none;">
+            <h3>Admin Actions</h3>
+            <button id="adminPublishArticleBtn" class="btn-primary" style="margin-bottom: 20px;"><i class="fas fa-plus"></i> Publish New Article (as Admin)</button>
+            
+            <h3>Website Settings</h3>
+            <div style="margin-bottom: 20px;">
+                <label>Site Title</label>
+                <input type="text" id="adminSiteTitle" placeholder="Site Title">
+                <label>Site Tagline</label>
+                <input type="text" id="adminSiteTagline" placeholder="Tagline">
+                <label>Hero Heading</label>
+                <input type="text" id="adminHeroTitle" placeholder="Hero Title">
+                <label>Hero Subtitle</label>
+                <input type="text" id="adminHeroSubtitle" placeholder="Hero Subtitle">
+                <label>Footer Text</label>
+                <input type="text" id="adminFooterText" placeholder="Footer">
+                <button id="saveWebsiteSettingsBtn" class="btn-primary">Save Website Settings</button>
+            </div>
+            
+            <h3>Manage Categories</h3>
+            <div style="display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap;">
+                <input type="text" id="newCategoryName" placeholder="New category name" style="flex:1;">
+                <button id="addCategoryBtn">Add Category</button>
+            </div>
+            <div id="categoriesList"></div>
+            
+            <h3 style="margin-top: 24px;">Manage All Articles (Edit/Delete)</h3>
+            <div id="adminArticlesList"></div>
+            <button id="closeAdminBtn" style="margin-top: 20px;">Close Panel</button>
+        </div>
+    </div>
+</div>
+
+<!-- Full Article Modal -->
+<div id="articleViewModal" class="modal full-article-modal">
+    <div class="modal-content">
+        <h2 id="viewTitle"></h2>
+        <div class="card-meta"><span id="viewCategory"></span> • <span id="viewDate"></span> • <span id="viewAuthor"></span></div>
+        <div id="viewTags" class="card-tags"></div>
+        <div id="viewContent" class="article-body"></div>
+        <div class="article-actions">
+            <button id="copyArticleBtn" class="action-btn"><i class="far fa-copy"></i> Copy</button>
+            <button id="likeArticleBtn" class="action-btn"><i class="far fa-heart"></i> Like (<span id="likeCount">0</span>)</button>
+            <button id="shareFBBtn" class="action-btn"><i class="fab fa-facebook-f"></i> Share</button>
+        </div>
+        <div class="comments-section">
+            <h4>Comments</h4>
+            <div id="commentsList"></div>
+            <textarea id="newComment" rows="2" placeholder="Share your thought..." style="width:100%; margin: 12px 0;"></textarea>
+            <button id="postCommentBtn" class="btn-outline">Post Comment</button>
+            <div id="commentLoginMsg" class="login-prompt"></div>
+        </div>
+        <button id="closeArticleBtn" style="margin-top: 20px;">Close</button>
+    </div>
+</div>
+
+<script>
+    // Data stores
+    let articles = [];
+    let users = [];
+    let currentUser = null;
+    let currentArticleId = null;
+    let isAdminLoggedIn = false;
+    let currentEditingArticleId = null;
+    let websiteCategories = ["Relationships", "Psychology", "Self-Improvement", "Staying Single Times"];
+
+    // Website settings
+    let websiteSettings = {
+        siteTitle: "Article Desk",
+        siteTagline: "where thoughts find readers.",
+        heroTitle: "Read. Reflect. Connect.",
+        heroSubtitle: "Insights on psychology, relationships, and self-improvement — written for deep thinking.",
+        footerText: "Article Desk — where thoughts find readers. 2025"
+    };
+
+    const ADMIN_PASSWORD = "me_as_admin";
+
+    const sampleArticles = [
+        { id: "a1", title: "When Attention Feels Like Interest", category: "Relationships", tags: ["attention","boundaries"], content: "Sometimes people enjoy the attention you give them without being romantically interested. It is about validation, not connection. Recognize the difference: does she initiate? Does she invest equal energy? If attention flows only one way, protect your emotional energy. Healthy relationships require mutual effort and genuine curiosity about each other's inner world.", date: "2025-03-10", author: "Editor", likes: {}, comments: [] },
+        { id: "a2", title: "Why We Crave Validation", category: "Psychology", tags: ["self-esteem","psychology"], content: "External validation triggers dopamine. But chasing it leaves you empty. Build internal self-worth instead of relying on someone's likes or replies. True confidence comes from within, not from the number of eyes on you. Practice self-reflection and set goals that align with your values rather than seeking applause.", date: "2025-03-05", author: "Editor", likes: {}, comments: [] },
+        { id: "a3", title: "The Beauty of Staying Single", category: "Staying Single Times", tags: ["single","self-growth"], content: "Being single is not a waiting room for a relationship. It is a time for profound self-discovery, building your career, traveling, and understanding what truly makes you happy. Embrace this chapter fully.", date: "2025-03-01", author: "Editor", likes: {}, comments: [] }
+    ];
+
+    function loadData() {
+        const storedArticles = localStorage.getItem("articledesk_articles");
+        if(storedArticles) articles = JSON.parse(storedArticles);
+        else articles = JSON.parse(JSON.stringify(sampleArticles));
+        
+        const storedUsers = localStorage.getItem("articledesk_users");
+        if(storedUsers) users = JSON.parse(storedUsers);
+        else users = [{ id: "u1", username: "reader", password: "pass123" }];
+        
+        const storedCategories = localStorage.getItem("articledesk_categories");
+        if(storedCategories) websiteCategories = JSON.parse(storedCategories);
+        
+        const storedSettings = localStorage.getItem("articledesk_settings");
+        if(storedSettings) websiteSettings = JSON.parse(storedSettings);
+        
+        applyWebsiteSettings();
+        saveAll();
+    }
+
+    function applyWebsiteSettings() {
+        document.getElementById("siteTitle").innerText = websiteSettings.siteTitle;
+        document.getElementById("siteTagline").innerText = websiteSettings.siteTagline;
+        document.getElementById("heroTitle").innerText = websiteSettings.heroTitle;
+        document.getElementById("heroSubtitle").innerText = websiteSettings.heroSubtitle;
+        document.getElementById("footerText").innerText = websiteSettings.footerText;
+    }
+
+    function saveAll() { 
+        localStorage.setItem("articledesk_articles", JSON.stringify(articles));
+        localStorage.setItem("articledesk_users", JSON.stringify(users));
+        localStorage.setItem("articledesk_categories", JSON.stringify(websiteCategories));
+        localStorage.setItem("articledesk_settings", JSON.stringify(websiteSettings));
+    }
+
+    function renderAll() {
+        renderCategorySelectors();
+        renderArticlesGrid();
+        renderSidebarCategories();
+        renderSidebarTags();
+        renderRecentList();
+        updateUserUI();
+        if(isAdminLoggedIn && document.getElementById("adminDashboardDiv").style.display === "block") {
+            renderAdminList();
+            renderCategoriesList();
+        }
+    }
+
+    function renderCategorySelectors() {
+        const catSelect = document.getElementById("articleCategory");
+        if(catSelect) {
+            catSelect.innerHTML = websiteCategories.map(c => `<option value="${c}">${c}</option>`).join('');
+        }
+    }
+
+    function renderArticlesGrid() {
+        let filtered = [...articles];
+        const searchTerm = document.getElementById("searchInput")?.value.toLowerCase() || "";
+        if(searchTerm) filtered = filtered.filter(a => a.title.toLowerCase().includes(searchTerm) || a.content.toLowerCase().includes(searchTerm));
+        const activeCat = document.querySelector(".filter-chip.active")?.getAttribute("data-cat");
+        if(activeCat && activeCat !== "all") filtered = filtered.filter(a => a.category === activeCat);
+        const grid = document.getElementById("articlesGrid");
+        if(filtered.length === 0) { grid.innerHTML = "<p>No articles found.</p>"; return; }
+        grid.innerHTML = filtered.map(a => `
+            <div class="card">
+                <h3>${escapeHtml(a.title)}</h3>
+                <div class="card-meta">${a.category} • ${a.date} • by ${escapeHtml(a.author || "Anonymous")}</div>
+                <p>${escapeHtml(a.content.substring(0, 110))}...</p>
+                <div class="card-tags">${a.tags.map(t=>`<span class="tag">${escapeHtml(t)}</span>`).join('')}</div>
+                <button class="readArticleBtn" data-id="${a.id}">Read full article →</button>
+            </div>
+        `).join('');
+        document.querySelectorAll('.readArticleBtn').forEach(btn => btn.addEventListener('click', (e) => openArticle(btn.getAttribute('data-id'))));
+    }
+
+    function openArticle(articleId) {
+        const article = articles.find(a => a.id === articleId);
+        if(!article) return;
+        currentArticleId = articleId;
+        document.getElementById("viewTitle").innerText = article.title;
+        document.getElementById("viewCategory").innerText = article.category;
+        document.getElementById("viewDate").innerText = article.date;
+        document.getElementById("viewAuthor").innerHTML = `<i class="fas fa-user"></i> ${escapeHtml(article.author || "Anonymous")}`;
+        document.getElementById("viewTags").innerHTML = article.tags.map(t=>`<span class="tag">${escapeHtml(t)}</span>`).join('');
+        document.getElementById("viewContent").innerText = article.content;
+        const likeCount = article.likes ? Object.keys(article.likes).length : 0;
+        document.getElementById("likeCount").innerText = likeCount;
+        const likeBtn = document.getElementById("likeArticleBtn");
+        if(currentUser && article.likes && article.likes[currentUser.id]) likeBtn.innerHTML = '<i class="fas fa-heart"></i> Liked (<span id="likeCount">'+likeCount+'</span>)';
+        else likeBtn.innerHTML = '<i class="far fa-heart"></i> Like (<span id="likeCount">'+likeCount+'</span>)';
+        renderComments(article);
+        document.getElementById("articleViewModal").style.display = "flex";
+    }
+
+    function renderComments(article) {
+        const commentsDiv = document.getElementById("commentsList");
+        const comments = article.comments || [];
+        if(comments.length === 0) { commentsDiv.innerHTML = "<p style='color:#6b6b7a;'>No comments yet. Be the first.</p>"; return; }
+        commentsDiv.innerHTML = comments.map(c => `<div class="comment"><strong>${escapeHtml(c.username)}</strong> <span style="font-size:0.7rem;">${c.date}</span><br>${escapeHtml(c.text)}</div>`).join('');
+    }
+
+    function postComment() {
+        if(!currentUser) { document.getElementById("commentLoginMsg").innerText = "Please sign in to comment."; return; }
+        const text = document.getElementById("newComment").value.trim();
+        if(!text) return;
+        const article = articles.find(a => a.id === currentArticleId);
+        if(article) {
+            if(!article.comments) article.comments = [];
+            article.comments.push({ username: currentUser.username, text, date: new Date().toLocaleDateString() });
+            saveAll();
+            renderComments(article);
+            document.getElementById("newComment").value = "";
+        }
+    }
+
+    function copyArticleText() {
+        const content = document.getElementById("viewContent").innerText;
+        navigator.clipboard.writeText(content).then(() => {
+            const toast = document.createElement("div"); toast.className = "copy-toast"; toast.innerText = "Article copied"; document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 1500);
+        });
+    }
+
+    function likeArticle() {
+        if(!currentUser) { alert("Sign in to like"); return; }
+        const article = articles.find(a => a.id === currentArticleId);
+        if(article) {
+            if(!article.likes) article.likes = {};
+            if(article.likes[currentUser.id]) delete article.likes[currentUser.id];
+            else article.likes[currentUser.id] = true;
+            saveAll();
+            openArticle(currentArticleId);
+        }
+    }
+
+    function shareOnFB() {
+        const article = articles.find(a => a.id === currentArticleId);
+        if(article) window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}&quote=${encodeURIComponent(article.title)}`, '_blank');
+    }
+
+    function publishArticle(isAdminPublish = false) {
+        const title = document.getElementById("articleTitle").value.trim();
+        const category = document.getElementById("articleCategory").value;
+        const tagsRaw = document.getElementById("articleTags").value;
+        const tags = tagsRaw.split(',').map(t=>t.trim()).filter(t=>t);
+        const content = document.getElementById("articleContent").value.trim();
+        if(!title || !content) { alert("Title and content required"); return; }
+        
+        if(currentEditingArticleId) {
+            // Edit existing article
+            const index = articles.findIndex(a => a.id === currentEditingArticleId);
+            if(index !== -1) {
+                articles[index] = {
+                    ...articles[index],
+                    title, category, tags, content,
+                    date: new Date().toISOString().slice(0,10)
+                };
+                saveAll();
+                renderAll();
+                alert("Article updated successfully!");
+            }
+            currentEditingArticleId = null;
+        } else {
+            // Create new article
+            const newArticle = {
+                id: Date.now().toString(),
+                title, category, tags, content,
+                date: new Date().toISOString().slice(0,10),
+                author: isAdminPublish ? "Admin" : (currentUser ? currentUser.username : "Anonymous"),
+                likes: {}, comments: []
+            };
+            articles.unshift(newArticle);
+            saveAll();
+            renderAll();
+            alert("Article published successfully!");
+        }
+        
+        document.getElementById("editorModal").style.display = "none";
+        document.getElementById("editorTitle").innerText = "Create New Article";
+        document.getElementById("articleTitle").value = "";
+        document.getElementById("articleContent").value = "";
+        document.getElementById("articleTags").value = "";
+    }
+
+    function deleteArticleById(id) {
+        if(confirm("Delete this article permanently?")) {
+            articles = articles.filter(a => a.id !== id);
+            saveAll();
+            renderAll();
+            if(isAdminLoggedIn && document.getElementById("adminDashboardDiv").style.display === "block") renderAdminList();
+        }
+    }
+
+    function editArticleById(id) {
+        const article = articles.find(a => a.id === id);
+        if(article) {
+            currentEditingArticleId = id;
+            document.getElementById("editorTitle").innerText = "Edit Article";
+            document.getElementById("articleTitle").value = article.title;
+            document.getElementById("articleCategory").value = article.category;
+            document.getElementById("articleTags").value = article.tags.join(',');
+            document.getElementById("articleContent").value = article.content;
+            document.getElementById("editorModal").style.display = "flex";
+            // Override save button for editing
+            const saveBtn = document.getElementById("saveArticleBtn");
+            const newSaveHandler = () => publishArticle(false);
+            saveBtn.onclick = newSaveHandler;
+        }
+    }
+
+    function renderAdminList() {
+        const container = document.getElementById("adminArticlesList");
+        if(!container) return;
+        if(articles.length === 0) {
+            container.innerHTML = "<p>No articles yet.</p>";
+            return;
+        }
+        container.innerHTML = articles.map(a => `
+            <div class="admin-article-row">
+                <div class="admin-article-title">${escapeHtml(a.title)}</div>
+                <div class="card-meta">${a.category} • ${a.date} • by ${escapeHtml(a.author || "Anonymous")}</div>
+                <div class="admin-article-actions">
+                    <button class="adminEditBtn" data-id="${a.id}" style="background:#4a6fa5; color:white; border:none;">Edit</button>
+                    <button class="adminDeleteBtn" data-id="${a.id}" style="background:#e74c3c; color:white; border:none;">Delete</button>
+                </div>
+            </div>
+        `).join('');
+        
+        document.querySelectorAll('.adminEditBtn').forEach(btn => {
+            btn.addEventListener('click', () => editArticleById(btn.getAttribute('data-id')));
+        });
+        document.querySelectorAll('.adminDeleteBtn').forEach(btn => {
+            btn.addEventListener('click', () => deleteArticleById(btn.getAttribute('data-id')));
+        });
+    }
+
+    function renderCategoriesList() {
+        const container = document.getElementById("categoriesList");
+        if(!container) return;
+        container.innerHTML = websiteCategories.map((cat, idx) => `<div class="category-item"><span>${escapeHtml(cat)}</span><button class="deleteCategoryBtn" data-cat="${cat}">Remove</button></div>`).join('');
+        document.querySelectorAll('.deleteCategoryBtn').forEach(btn => btn.onclick = () => {
+            const catToRemove = btn.getAttribute('data-cat');
+            if(confirm(`Remove category "${catToRemove}"?`)) {
+                websiteCategories = websiteCategories.filter(c => c !== catToRemove);
+                saveAll();
+                renderCategoriesList();
+                renderAll();
+            }
+        });
+    }
+
+    function addNewCategory() {
+        const newCat = document.getElementById("newCategoryName").value.trim();
+        if(newCat && !websiteCategories.includes(newCat)) {
+            websiteCategories.push(newCat);
+            saveAll();
+            renderCategoriesList();
+            renderAll();
+            document.getElementById("newCategoryName").value = "";
+        } else if(!newCat) alert("Please enter a category name");
+        else alert("Category already exists");
+    }
+
+    function saveWebsiteSettings() {
+        websiteSettings.siteTitle = document.getElementById("adminSiteTitle").value;
+        websiteSettings.siteTagline = document.getElementById("adminSiteTagline").value;
+        websiteSettings.heroTitle = document.getElementById("adminHeroTitle").value;
+        websiteSettings.heroSubtitle = document.getElementById("adminHeroSubtitle").value;
+        websiteSettings.footerText = document.getElementById("adminFooterText").value;
+        saveAll();
+        applyWebsiteSettings();
+        alert("Website settings saved!");
+    }
+
+    function updateUserUI() {
+        const authBtn = document.getElementById("authBtn");
+        const userDisplay = document.getElementById("userDisplay");
+        if(currentUser) { userDisplay.innerText = `Hello, ${currentUser.username}`; authBtn.innerText = "Sign Out"; }
+        else { userDisplay.innerText = ""; authBtn.innerText = "Sign In"; }
+    }
+
+    function showAuthModal(mode = "login") {
+        document.getElementById("authTitle").innerText = mode === "login" ? "Sign In" : "Create Account";
+        document.getElementById("authSubmitBtn").innerText = mode === "login" ? "Sign In" : "Sign Up";
+        document.getElementById("authSwitchText").innerText = mode === "login" ? "No account? Create one" : "Already have an account? Sign in";
+        document.getElementById("authSwitchText").onclick = () => showAuthModal(mode === "login" ? "register" : "login");
+        document.getElementById("authModal").style.display = "flex";
+        window.currentAuthMode = mode;
+    }
+
+    function handleAuthSubmit() {
+        const username = document.getElementById("authUsername").value.trim();
+        const password = document.getElementById("authPassword").value.trim();
+        if(!username || !password) return alert("Fill all fields");
+        if(window.currentAuthMode === "login") {
+            const user = users.find(u => u.username === username && u.password === password);
+            if(user) { currentUser = user; closeAuthModal(); renderAll(); }
+            else alert("Invalid credentials");
+        } else {
+            if(users.find(u => u.username === username)) return alert("Username exists");
+            const newUser = { id: Date.now().toString(), username, password };
+            users.push(newUser); saveAll(); currentUser = newUser; closeAuthModal(); renderAll();
+        }
+    }
+
+    function closeAuthModal() { document.getElementById("authModal").style.display = "none"; }
+    function logout() { currentUser = null; renderAll(); }
+
+    function renderSidebarCategories() {
+        const container = document.getElementById("sidebarCategories");
+        container.innerHTML = `<button class="filter-chip active" data-cat="all">All</button>` + websiteCategories.map(c=>`<button class="filter-chip" data-cat="${c}">${c}</button>`).join('');
+        document.querySelectorAll('.filter-chip').forEach(btn => btn.addEventListener('click', function() { document.querySelectorAll('.filter-chip').forEach(b=>b.classList.remove('active')); this.classList.add('active'); renderArticlesGrid(); }));
+        const catFilterDiv = document.getElementById("categoryFilters");
+        catFilterDiv.innerHTML = websiteCategories.map(c=>`<button class="filter-chip" data-cat="${c}">${c}</button>`).join('');
+        catFilterDiv.querySelectorAll('.filter-chip').forEach(btn => btn.addEventListener('click', function() { document.querySelectorAll('.filter-chip').forEach(b=>b.classList.remove('active')); this.classList.add('active'); renderArticlesGrid(); }));
+    }
+
+    function renderSidebarTags() {
+        const tagCounts = new Map();
+        articles.forEach(a => a.tags.forEach(t => tagCounts.set(t, (tagCounts.get(t)||0)+1)));
+        const topTags = [...tagCounts.entries()].sort((a,b)=>b[1]-a[1]).slice(0,6);
+        const container = document.getElementById("sidebarTags");
+        container.innerHTML = topTags.map(([tag])=>`<button class="filter-chip tag-filter" data-tag="${tag}">${tag}</button>`).join('');
+        document.querySelectorAll('.tag-filter').forEach(btn => btn.onclick = () => { document.getElementById("searchInput").value = btn.getAttribute('data-tag'); renderArticlesGrid(); });
+    }
+
+    function renderRecentList() {
+        const recent = [...articles].sort((a,b)=> new Date(b.date)-new Date(a.date)).slice(0,5);
+        const ul = document.getElementById("recentList");
+        ul.innerHTML = recent.map(a=>`<li style="margin-bottom:10px;"><button class="readArticleBtn" data-id="${a.id}" style="background:none; border:none; color:inherit; cursor:pointer; text-align:left; font-size:0.85rem;">📖 ${escapeHtml(a.title)}</button></li>`).join('');
+        document.querySelectorAll('#recentList .readArticleBtn').forEach(btn => btn.addEventListener('click', (e) => openArticle(btn.getAttribute('data-id'))));
+    }
+
+    function escapeHtml(str) { return str.replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
+
+    // Event listeners
+    document.getElementById("darkModeToggle").onclick = () => { document.body.classList.toggle("dark"); };
+    document.getElementById("browseAllBtn").onclick = () => document.getElementById("articlesList").scrollIntoView({behavior:"smooth"});
+    document.getElementById("searchInput").addEventListener("input", () => renderArticlesGrid());
+    document.getElementById("authBtn").onclick = () => { if(currentUser) logout(); else showAuthModal("login"); };
+    document.getElementById("authSubmitBtn").onclick = handleAuthSubmit;
+    document.getElementById("closeAuthBtn").onclick = closeAuthModal;
+    document.getElementById("closeArticleBtn").onclick = () => document.getElementById("articleViewModal").style.display = "none";
+    document.getElementById("copyArticleBtn").onclick = copyArticleText;
+    document.getElementById("likeArticleBtn").onclick = likeArticle;
+    document.getElementById("shareFBBtn").onclick = shareOnFB;
+    document.getElementById("postCommentBtn").onclick = postComment;
+    
+    document.getElementById("createArticleBtn").onclick = () => { 
+        if(!currentUser) alert("Sign in to write articles"); 
+        else { 
+            currentEditingArticleId = null;
+            document.getElementById("editorTitle").innerText = "Create New Article";
+            document.getElementById("articleTitle").value = "";
+            document.getElementById("articleContent").value = "";
+            document.getElementById("articleTags").value = "";
+            document.getElementById("editorModal").style.display = "flex"; 
+            const saveBtn = document.getElementById("saveArticleBtn");
+            saveBtn.onclick = () => publishArticle(false);
+            renderCategorySelectors();
+        } 
+    };
+    
+    document.getElementById("cancelEditorBtn").onclick = () => {
+        document.getElementById("editorModal").style.display = "none";
+        currentEditingArticleId = null;
+    };
+    
+    document.getElementById("adminPanelBtn").onclick = () => document.getElementById("adminModal").style.display = "flex";
+    
+    document.getElementById("adminLoginBtn").onclick = () => { 
+        if(document.getElementById("adminPass").value === ADMIN_PASSWORD) { 
+            isAdminLoggedIn = true; 
+            document.getElementById("adminLoginDiv").style.display = "none"; 
+            document.getElementById("adminDashboardDiv").style.display = "block"; 
+            renderAdminList(); 
+            renderCategoriesList();
+            document.getElementById("adminSiteTitle").value = websiteSettings.siteTitle;
+            document.getElementById("adminSiteTagline").value = websiteSettings.siteTagline;
+            document.getElementById("adminHeroTitle").value = websiteSettings.heroTitle;
+            document.getElementById("adminHeroSubtitle").value = websiteSettings.heroSubtitle;
+            document.getElementById("adminFooterText").value = websiteSettings.footerText;
+        } else alert("Wrong admin password"); 
+    };
+    
+    document.getElementById("adminPublishArticleBtn").onclick = () => {
+        currentEditingArticleId = null;
+        document.getElementById("editorTitle").innerText = "Publish as Admin";
+        document.getElementById("articleTitle").value = "";
+        document.getElementById("articleContent").value = "";
+        document.getElementById("articleTags").value = "";
+        document.getElementById("editorModal").style.display = "flex";
+        const saveBtn = document.getElementById("saveArticleBtn");
+        saveBtn.onclick = () => publishArticle(true);
+        renderCategorySelectors();
+    };
+    
+    document.getElementById("addCategoryBtn").onclick = addNewCategory;
+    document.getElementById("saveWebsiteSettingsBtn").onclick = saveWebsiteSettings;
+    
+    document.getElementById("closeAdminBtn").onclick = () => { 
+        document.getElementById("adminModal").style.display = "none"; 
+        document.getElementById("adminLoginDiv").style.display = "block"; 
+        document.getElementById("adminDashboardDiv").style.display = "none"; 
+        document.getElementById("adminPass").value = ""; 
+        isAdminLoggedIn = false; 
+    };
+    
+    window.onclick = (e) => { if(e.target.classList.contains('modal')) e.target.style.display = "none"; };
+    
+    loadData(); 
+    renderAll();
+</script>
+</body>
+</html>
