@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -49,7 +49,6 @@
         }
 
         body.dark .card-meta,
-        body.dark .login-prompt,
         body.dark .comment {
             color: #b0b0bc;
         }
@@ -407,17 +406,6 @@
             z-index: 1100;
         }
 
-        .login-prompt {
-            font-size: 0.8rem;
-            color: #6b6b7a;
-            margin-top: 12px;
-        }
-
-        .user-greeting {
-            font-size: 0.85rem;
-            font-weight: 500;
-        }
-
         .category-item {
             display: flex;
             justify-content: space-between;
@@ -449,6 +437,15 @@
             gap: 10px;
             margin-top: 10px;
         }
+
+        .admin-badge-header {
+            background: #e74c3c;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            margin-left: 10px;
+        }
     </style>
 </head>
 <body>
@@ -461,9 +458,8 @@
                 <p id="siteTagline">where thoughts find readers.</p>
             </div>
             <div class="nav-buttons">
-                <span id="userDisplay" class="user-greeting"></span>
-                <button id="darkModeToggle"><i class="fas fa-moon"></i> Dark</button>
-                <button id="authBtn">Sign In</button>
+                <button id="darkModeToggle"><i class="fas fa-moon"></i> Dark Mode</button>
+                <button id="adminPanelBtn" class="btn-primary"><i class="fas fa-lock"></i> Admin Panel</button>
             </div>
         </div>
     </div>
@@ -481,10 +477,6 @@
             <div id="articlesList">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
                     <h2>All Articles</h2>
-                    <div style="display: flex; gap: 12px;">
-                        <button id="createArticleBtn" class="btn-outline"><i class="fas fa-pen"></i> Write Article</button>
-                        <button id="adminPanelBtn" class="btn-outline"><i class="fas fa-lock"></i> Admin</button>
-                    </div>
                 </div>
                 <div id="categoryFilters" class="filter-buttons"></div>
                 <div id="articlesGrid" class="articles-grid"></div>
@@ -513,35 +505,23 @@
 </div>
 
 <footer>
-    <p id="footerText">Article Desk — where thoughts find readers. 2025</p>
+    <p id="footerText">Article Desk — where thoughts find readers. 2026</p>
 </footer>
 
-<!-- Auth Modal -->
-<div id="authModal" class="modal">
-    <div class="modal-content">
-        <h2 id="authTitle">Sign In</h2>
-        <input type="text" id="authUsername" placeholder="Username" autocomplete="off">
-        <input type="password" id="authPassword" placeholder="Password">
-        <button id="authSubmitBtn" class="btn-primary">Sign In</button>
-        <p id="authSwitchText" style="margin-top: 16px; text-align: center; cursor: pointer; color: #4a6fa5;">Create an account</p>
-        <button id="closeAuthBtn" style="margin-top: 12px;">Cancel</button>
-    </div>
-</div>
-
-<!-- Article Editor Modal -->
+<!-- Article Editor Modal (Admin Only) -->
 <div id="editorModal" class="modal">
     <div class="modal-content">
         <h2 id="editorTitle">Create New Article</h2>
         <input type="text" id="articleTitle" placeholder="Article Title">
         <select id="articleCategory"></select>
         <input type="text" id="articleTags" placeholder="Tags (comma separated, e.g. love, boundaries)">
-        <textarea id="articleContent" rows="8" placeholder="Write your article content here..."></textarea>
+        <textarea id="articleContent" rows="10" placeholder="Write your article content here..."></textarea>
         <button id="saveArticleBtn" class="btn-primary">Publish Article</button>
         <button id="cancelEditorBtn">Cancel</button>
     </div>
 </div>
 
-<!-- Admin Panel Modal - Full Website Control -->
+<!-- Admin Panel Modal -->
 <div id="adminModal" class="modal">
     <div class="modal-content">
         <h2>Admin Control Panel</h2>
@@ -550,8 +530,8 @@
             <button id="adminLoginBtn">Login as Admin</button>
         </div>
         <div id="adminDashboardDiv" style="display:none;">
-            <h3>Admin Actions</h3>
-            <button id="adminPublishArticleBtn" class="btn-primary" style="margin-bottom: 20px;"><i class="fas fa-plus"></i> Publish New Article (as Admin)</button>
+            <h3>Admin Actions <span class="admin-badge-header">Administrator</span></h3>
+            <button id="adminPublishArticleBtn" class="btn-primary" style="margin-bottom: 20px; width: 100%;"><i class="fas fa-plus"></i> Publish New Article</button>
             
             <h3>Website Settings</h3>
             <div style="margin-bottom: 20px;">
@@ -592,14 +572,13 @@
         <div class="article-actions">
             <button id="copyArticleBtn" class="action-btn"><i class="far fa-copy"></i> Copy</button>
             <button id="likeArticleBtn" class="action-btn"><i class="far fa-heart"></i> Like (<span id="likeCount">0</span>)</button>
-            <button id="shareFBBtn" class="action-btn"><i class="fab fa-facebook-f"></i> Share</button>
+            <button id="shareFBBtn" class="action-btn"><i class="fab fa-facebook-f"></i> Share on Facebook</button>
         </div>
         <div class="comments-section">
             <h4>Comments</h4>
             <div id="commentsList"></div>
             <textarea id="newComment" rows="2" placeholder="Share your thought..." style="width:100%; margin: 12px 0;"></textarea>
             <button id="postCommentBtn" class="btn-outline">Post Comment</button>
-            <div id="commentLoginMsg" class="login-prompt"></div>
         </div>
         <button id="closeArticleBtn" style="margin-top: 20px;">Close</button>
     </div>
@@ -608,10 +587,8 @@
 <script>
     // Data stores
     let articles = [];
-    let users = [];
-    let currentUser = null;
-    let currentArticleId = null;
     let isAdminLoggedIn = false;
+    let currentArticleId = null;
     let currentEditingArticleId = null;
     let websiteCategories = ["Relationships", "Psychology", "Self-Improvement", "Staying Single Times"];
 
@@ -624,22 +601,72 @@
         footerText: "Article Desk — where thoughts find readers. 2025"
     };
 
-    const ADMIN_PASSWORD = "me_as_admin";
+    const ADMIN_PASSWORD = "adminhere";
 
     const sampleArticles = [
-        { id: "a1", title: "When Attention Feels Like Interest", category: "Relationships", tags: ["attention","boundaries"], content: "Sometimes people enjoy the attention you give them without being romantically interested. It is about validation, not connection. Recognize the difference: does she initiate? Does she invest equal energy? If attention flows only one way, protect your emotional energy. Healthy relationships require mutual effort and genuine curiosity about each other's inner world.", date: "2025-03-10", author: "Editor", likes: {}, comments: [] },
-        { id: "a2", title: "Why We Crave Validation", category: "Psychology", tags: ["self-esteem","psychology"], content: "External validation triggers dopamine. But chasing it leaves you empty. Build internal self-worth instead of relying on someone's likes or replies. True confidence comes from within, not from the number of eyes on you. Practice self-reflection and set goals that align with your values rather than seeking applause.", date: "2025-03-05", author: "Editor", likes: {}, comments: [] },
-        { id: "a3", title: "The Beauty of Staying Single", category: "Staying Single Times", tags: ["single","self-growth"], content: "Being single is not a waiting room for a relationship. It is a time for profound self-discovery, building your career, traveling, and understanding what truly makes you happy. Embrace this chapter fully.", date: "2025-03-01", author: "Editor", likes: {}, comments: [] }
+        { id: "a1", title: "মনোযোগ কেন ভালো লাগে?", category: "Relationships", tags: ["attention","boundaries"], content: "মনোযোগ পাওয়া মানে হলো সামাজিকভাবে আপনি মূল্যবান। যখন আপনি কাউকে সময় দেন, তার প্রশংসা করেন, তার কথা শোনেন, তাকে হাসান—আপনি আসলে বলছেন, "তুমি গুরুত্বপূর্ণ।"
+
+যেসব মানুষ (নারীরাও এর মধ্যে পড়েন, তবে শুধু নারী নয়) বাইরের স্বীকৃতির উপর আত্মসম্মান নির্ভর করে, তাদের জন্য এই মনোযোগ একটি ইতিবাচক উদ্দীপনা। এটা আসক্তির মতো হতে পারে। তাই তিনি হয়তো আপনার প্রতি আগ্রহী নন, কিন্তু মনোযোগ পাওয়ার সুবাদে ডোপামিন (মস্তিষ্কের আনন্দের রাসায়নিক) পান।
+
+১ কখন সমস্যা তৈরি হয়?
+
+সমস্যা হয় তখন, যখন আপনার প্রত্যাশা আর তার উদ্দেশ্য মেলে না।
+
+- আপনার দৃষ্টিকোণ: "সে আমার সঙ্গে কথা বলে, হাসে, সময় কাটায় → নিশ্চয়ই সে আগ্রহী।"
+- তার দৃষ্টিকোণ: "আমি শুধু ফ্রেন্ডলি হচ্ছি, মনোযোগটা ভালো লাগে → আমি কিন্তু কখনো সম্পর্কের কথা বলিনি।"
+
+এটাকে অনেকে 'লিডিং অন' (ভুল আশা জাগানো) বলে। কিন্তু সবসময় যে সেটা ইচ্ছাকৃত, তা নয়।
+
+২ কেন একজন নারী শুধু মনোযোগ নিতে পারেন (আগ্রহ ছাড়া)?
+
+সব নারীই যে খারাপ বা প্রতারক, তা নয়। এর পেছনে বাস্তব কারণ থাকে:
+
+- আত্মসম্মানের অভাব: বাইরে থেকে আসা প্রশংসা ভেতরের শূন্যতা সাময়িক ভরাট করে। মনোযোগ বন্ধ হলে আবার সেই শূন্যতা বোধ হয়।
+- দ্বন্দ্ব এড়ানো: অনেকেই সরাসরি "আমি আগ্রহী নই" বলা এড়িয়ে চলেন, ভয়ে যে উল্টোটা বলা মানে অভদ্র হওয়া। তাই তিনি চুপ করে থাকেন, আর আপনাকে আশা জাগতে থাকে।
+- একাকীত্ব বা সময় কাটানো: আপনার মনোযোগ তার জন্য নিছক বিনোদন বা সময় কাটানোর মাধ্যম। বিশেষ করে যখন তার জীবন অন্য দিক থেকে একঘেয়ে।
+- সাংস্কৃতিক চাপ:  সমাজ প্রায়ই নারীদের 'মিষ্টি', 'সহানুভূতিশীল' হতে শেখায়। তাই তিনি হয়তো স্পষ্ট না বলে ফাঁকি দেন, কারণ সরাসরি 'না' বলাটাকে তিনি পাপ বলে মনে করেন।
+
+৩ বাস্তবতার কঠিন দিক
+
+আপনি যখন মনোযোগ দিচ্ছেন, তখন আপনি সেটাকে বিনিয়োগ হিসেবে দেখেন। আপনার সময়, আবেগ, শক্তি—এসবের বিনিময়ে আপনি প্রত্যাশা করেন একটি সম্পর্ক বা ভালোবাসা।
+
+কিন্তু যিনি শুধু মনোযোগ নিচ্ছেন, তিনি সেটাকে উপভোগ্য উপহার হিসেবে দেখেন। যতক্ষণ ভালো লাগে, ততক্ষণ নেন। কোনো বিনিয়োগ নেই বলে ফিরিয়ে দিতে চাওয়ারও দায় নেই—অন্তত তার মতে।
+
+এ কারণেই পরে আপনার মনে হবে, "সে তো সব সময় ভালো ব্যবহার করতো, তারপর কেন?" আর তার মনে হবে, "আমি তো কিছুই প্রতিশ্রুতি দেইনি, শুধু কথা বলেছি।"
+
+৪ শুধু নারী কেন? (লিঙ্গগত দিক)
+
+আপনি বিশেষ করে 'নারীর' কথা বলেছেন, তাই এই প্রসঙ্গ গুরুত্বপূর্ণ:
+- মনোযোগের প্রাচুর্য: অনেক নারী ছোটবেলা থেকেই বিভিন্ন রকম মনোযোগ পান। তাই তিনি জানেন কীভাবে সেটাকে ফিল্টার করতে হয়। অন্যদিকে, অনেক পুরুষ খুব কম মনোযোগ পান, তাই কোনো নারীর কাছ থেকে টানা মনোযোগ পেলে সেটা তার কাছে বিরল ও মূল্যবান হয়ে ওঠে।
+- প্রত্যাখ্যানের মূল্য: কোনো পুরুষকে সরাসরি প্রত্যাখ্যান করলে নারীকে প্রায়ই 'বদমেজাজি' বা 'অভদ্র' বলা হয়। কখনো কখনো এটি নিরাপত্তার জন্যও ঝুঁকিপূর্ণ। তাই তিনি প্রত্যাখ্যান না করে মনোযোগ নেওয়াকেই সহজ পথ বেছে নেন।
+
+৫ আপনি কী করবেন? (ব্যবহারিক পরামর্শ)
+
+তিনি সত্যিই আগ্রহী, না শুধু মনোযোগ নিচ্ছেন—তা বোঝার সবচেয়ে সহজ উপায় হলো দেখুন তিনি আপনার জন্য কী করেন।
+
+যদি তিনি শুধু মনোযোগ নেন | যদি তিনি সত্যিই আগ্রহী হন |
+
+সব সময় আপনিই প্রথম মেসেজ করেন | তিনিও মাঝে মাঝে প্রথম মেসেজ করেন |
+তিনি শুধু নিজের কথা বলেন, আপনার সম্পর্কে জানতে চান না | আপনার দিন, অনুভূতি, পছন্দ-অপছন্দ জানতে আগ্রহী |
+দেখা করার জন্য আপনার প্রস্তাব ফিরিয়ে দেন বা এড়িয়ে যান | তিনিও প্ল্যান করতে আগ্রহী হন |
+আপনার দেওয়া সময়, টাকা, আবেগের বিনিময়ে কিছু দেন না | তিনিও আপনার জন্য সমান সময় ও শ্রম দিতে রাজি |
+
+প্রধান কৌশল: আপনার মনোযোগ ধীরে ধীরে কমিয়ে দিন। যদি তিনি নিজ থেকে যোগাযোগ বাড়ান বা জানতে চান কী হয়েছে—তবে হয়তো তার সত্যিকারের আগ্রহ আছে। আর যদি আপনার মনোযোগ কমে যাওয়ায় তিনি কিছুই না করেন বা উল্টো রাগ করেন, তাহলে বুঝবেন তিনি শুধু মনোযোগটাই পছন্দ করতেন, আপনাকে নয়।
+
+সারকথা
+
+আপনার মনোযোগ একটি মূল্যবান সম্পদ। সেটা যেন একমুখী প্রবাহ না হয়। যিনি কেবল নিতে জানেন, ফিরিয়ে দিতে জানেন না—তাঁর জন্য আপনার মনোযোগ সংরক্ষণ করুন। প্রেম আর মনোযোগের সুখ আলাদা। প্রথমটি বিনিয়োগ চায়, দ্বিতীয়টি কেবল ভোগ।
+", date: "2026-04-14", author: "Admin", likes: {}, comments: [] },
+        { id: "a2", title: "Why We Crave Validation", category: "Psychology", tags: ["self-esteem","psychology"], content: "External validation triggers dopamine. But chasing it leaves you empty. Build internal self-worth instead of relying on someone's likes or replies. True confidence comes from within, not from the number of eyes on you. Practice self-reflection and set goals that align with your values rather than seeking applause.", date: "2025-03-05", author: "Admin", likes: {}, comments: [] },
+        { id: "a3", title: "The Beauty of Staying Single", category: "Staying Single Times", tags: ["single","self-growth"], content: "Being single is not a waiting room for a relationship. It is a time for profound self-discovery, building your career, traveling, and understanding what truly makes you happy. Embrace this chapter fully.", date: "2025-03-01", author: "Admin", likes: {}, comments: [] },
+        { id: "a4", title: "মনোযোগ ভালো লাগে, কিন্তু সম্পর্ক নয়", category: "Relationships", tags: ["মনোযোগ","সীমানা"], content: "অনেক সময় কেউ আপনার প্রতি রোমান্টিকভাবে আগ্রহী না হয়েও আপনার দেওয়া মনোযোগটা খুব পছন্দ করে। এটি তার জন্য বৈধতা পাওয়ার মতো ব্যাপার। যখন আপনি তাকে সময় দেন, তার প্রশংসা করেন, তাকে বিশেষ অনুভব করান — তখন তার মস্তিষ্কে ডোপামিন নিঃসৃত হয়। কিন্তু এর অর্থ এই নয় যে সে আপনার প্রেমে পড়েছে। কীভাবে বুঝবেন তিনি শুধু মনোযোগ নিচ্ছেন নাকি সত্যিই আগ্রহী? দেখুন তিনি আপনার জন্য কী করেন। তিনিই কি প্রথমে মেসেজ করেন? তিনি কি আপনার দিন সম্পর্কে জানতে চান? যদি সব সময় আপনিই উদ্যোগ নেন, আর তিনি শুধু সাড়া দেন — তাহলে বুঝবেন সেখানে শুধু মনোযোগের একমুখী প্রবাহ আছে। আপনার মনোযোগ একটি মূল্যবান সম্পদ। যিনি শুধু নিতে জানেন, ফিরিয়ে দিতে জানেন না — তার জন্য আপনার সময় ও আবেগ সংরক্ষণ করুন। সুস্থ সম্পর্ক হয় সমান বিনিময়ে।", date: "2025-03-12", author: "Admin", likes: {}, comments: [] },
+        { id: "a5", title: "একা থাকার সময়টাও উপভোগ করতে শিখুন", category: "Staying Single Times", tags: ["একা থাকা","আত্ম-উন্নয়ন"], content: "আমাদের সমাজে একা থাকাকে প্রায়ই নেতিবাচক চোখে দেখা হয়। 'তোর এখনও বিয়ে হয়নি?' 'কাউকে খুঁজে দেখ না' — এই ধরনের মন্তব্যে অনেকেই হতাশ হয়ে পড়েন। কিন্তু সত্যি কথা হলো, একা থাকা কোনো শূন্যতা নয়; এটি একটি সুযোগ। আপনি যখন একা থাকেন, তখন আপনি নিজেকে জানার সুযোগ পান। আপনার পছন্দ-অপছন্দ, আপনার স্বপ্ন, আপনার ভয়—এসব নিয়ে ভাবার সময় পান। আপনি নিজের ক্যারিয়ার গড়তে পারেন, ভ্রমণ করতে পারেন, নতুন স্কিল শিখতে পারেন। একা থাকার মানে এই নয় যে আপনি ভালোবাসার অযোগ্য। বরং এর মানে হলো, আপনি নিজের সাথে শান্তিতে থাকতে শিখছেন। আর যখন সঠিক সময়ে সঠিক মানুষ আসবেন, আপনি তখন একটি সুস্থ সম্পর্ক তৈরি করতে পারবেন — কারণ আপনি নিজের অসম্পূর্ণতা নিয়েও পরিপূর্ণ। তাই একা থাকাকে ভয় না পেয়ে আলিঙ্গন করুন। এই সময়টুকু নিজেকে বিনিয়োগের জন্য ব্যবহার করুন।", date: "2025-03-11", author: "Admin", likes: {}, comments: [] }
     ];
 
     function loadData() {
         const storedArticles = localStorage.getItem("articledesk_articles");
         if(storedArticles) articles = JSON.parse(storedArticles);
         else articles = JSON.parse(JSON.stringify(sampleArticles));
-        
-        const storedUsers = localStorage.getItem("articledesk_users");
-        if(storedUsers) users = JSON.parse(storedUsers);
-        else users = [{ id: "u1", username: "reader", password: "pass123" }];
         
         const storedCategories = localStorage.getItem("articledesk_categories");
         if(storedCategories) websiteCategories = JSON.parse(storedCategories);
@@ -661,7 +688,6 @@
 
     function saveAll() { 
         localStorage.setItem("articledesk_articles", JSON.stringify(articles));
-        localStorage.setItem("articledesk_users", JSON.stringify(users));
         localStorage.setItem("articledesk_categories", JSON.stringify(websiteCategories));
         localStorage.setItem("articledesk_settings", JSON.stringify(websiteSettings));
     }
@@ -672,7 +698,6 @@
         renderSidebarCategories();
         renderSidebarTags();
         renderRecentList();
-        updateUserUI();
         if(isAdminLoggedIn && document.getElementById("adminDashboardDiv").style.display === "block") {
             renderAdminList();
             renderCategoriesList();
@@ -697,7 +722,7 @@
         grid.innerHTML = filtered.map(a => `
             <div class="card">
                 <h3>${escapeHtml(a.title)}</h3>
-                <div class="card-meta">${a.category} • ${a.date} • by ${escapeHtml(a.author || "Anonymous")}</div>
+                <div class="card-meta">${a.category} • ${a.date} • by ${escapeHtml(a.author || "Admin")}</div>
                 <p>${escapeHtml(a.content.substring(0, 110))}...</p>
                 <div class="card-tags">${a.tags.map(t=>`<span class="tag">${escapeHtml(t)}</span>`).join('')}</div>
                 <button class="readArticleBtn" data-id="${a.id}">Read full article →</button>
@@ -713,14 +738,13 @@
         document.getElementById("viewTitle").innerText = article.title;
         document.getElementById("viewCategory").innerText = article.category;
         document.getElementById("viewDate").innerText = article.date;
-        document.getElementById("viewAuthor").innerHTML = `<i class="fas fa-user"></i> ${escapeHtml(article.author || "Anonymous")}`;
+        document.getElementById("viewAuthor").innerHTML = `<i class="fas fa-user"></i> ${escapeHtml(article.author || "Admin")}`;
         document.getElementById("viewTags").innerHTML = article.tags.map(t=>`<span class="tag">${escapeHtml(t)}</span>`).join('');
         document.getElementById("viewContent").innerText = article.content;
         const likeCount = article.likes ? Object.keys(article.likes).length : 0;
         document.getElementById("likeCount").innerText = likeCount;
         const likeBtn = document.getElementById("likeArticleBtn");
-        if(currentUser && article.likes && article.likes[currentUser.id]) likeBtn.innerHTML = '<i class="fas fa-heart"></i> Liked (<span id="likeCount">'+likeCount+'</span>)';
-        else likeBtn.innerHTML = '<i class="far fa-heart"></i> Like (<span id="likeCount">'+likeCount+'</span>)';
+        likeBtn.innerHTML = '<i class="far fa-heart"></i> Like (<span id="likeCount">'+likeCount+'</span>)';
         renderComments(article);
         document.getElementById("articleViewModal").style.display = "flex";
     }
@@ -729,17 +753,17 @@
         const commentsDiv = document.getElementById("commentsList");
         const comments = article.comments || [];
         if(comments.length === 0) { commentsDiv.innerHTML = "<p style='color:#6b6b7a;'>No comments yet. Be the first.</p>"; return; }
-        commentsDiv.innerHTML = comments.map(c => `<div class="comment"><strong>${escapeHtml(c.username)}</strong> <span style="font-size:0.7rem;">${c.date}</span><br>${escapeHtml(c.text)}</div>`).join('');
+        commentsDiv.innerHTML = comments.map(c => `<div class="comment"><strong>${escapeHtml(c.name)}</strong> <span style="font-size:0.7rem;">${c.date}</span><br>${escapeHtml(c.text)}</div>`).join('');
     }
 
     function postComment() {
-        if(!currentUser) { document.getElementById("commentLoginMsg").innerText = "Please sign in to comment."; return; }
         const text = document.getElementById("newComment").value.trim();
         if(!text) return;
+        const name = "Reader";
         const article = articles.find(a => a.id === currentArticleId);
         if(article) {
             if(!article.comments) article.comments = [];
-            article.comments.push({ username: currentUser.username, text, date: new Date().toLocaleDateString() });
+            article.comments.push({ name: name, text: text, date: new Date().toLocaleString() });
             saveAll();
             renderComments(article);
             document.getElementById("newComment").value = "";
@@ -749,18 +773,18 @@
     function copyArticleText() {
         const content = document.getElementById("viewContent").innerText;
         navigator.clipboard.writeText(content).then(() => {
-            const toast = document.createElement("div"); toast.className = "copy-toast"; toast.innerText = "Article copied"; document.body.appendChild(toast);
+            const toast = document.createElement("div"); toast.className = "copy-toast"; toast.innerText = "Article copied to clipboard"; document.body.appendChild(toast);
             setTimeout(() => toast.remove(), 1500);
         });
     }
 
     function likeArticle() {
-        if(!currentUser) { alert("Sign in to like"); return; }
         const article = articles.find(a => a.id === currentArticleId);
         if(article) {
             if(!article.likes) article.likes = {};
-            if(article.likes[currentUser.id]) delete article.likes[currentUser.id];
-            else article.likes[currentUser.id] = true;
+            const visitorId = "visitor_" + Date.now();
+            if(article.likes[visitorId]) delete article.likes[visitorId];
+            else article.likes[visitorId] = true;
             saveAll();
             openArticle(currentArticleId);
         }
@@ -771,7 +795,7 @@
         if(article) window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}&quote=${encodeURIComponent(article.title)}`, '_blank');
     }
 
-    function publishArticle(isAdminPublish = false) {
+    function publishArticle() {
         const title = document.getElementById("articleTitle").value.trim();
         const category = document.getElementById("articleCategory").value;
         const tagsRaw = document.getElementById("articleTags").value;
@@ -780,7 +804,6 @@
         if(!title || !content) { alert("Title and content required"); return; }
         
         if(currentEditingArticleId) {
-            // Edit existing article
             const index = articles.findIndex(a => a.id === currentEditingArticleId);
             if(index !== -1) {
                 articles[index] = {
@@ -794,12 +817,11 @@
             }
             currentEditingArticleId = null;
         } else {
-            // Create new article
             const newArticle = {
                 id: Date.now().toString(),
                 title, category, tags, content,
                 date: new Date().toISOString().slice(0,10),
-                author: isAdminPublish ? "Admin" : (currentUser ? currentUser.username : "Anonymous"),
+                author: "Admin",
                 likes: {}, comments: []
             };
             articles.unshift(newArticle);
@@ -834,37 +856,28 @@
             document.getElementById("articleTags").value = article.tags.join(',');
             document.getElementById("articleContent").value = article.content;
             document.getElementById("editorModal").style.display = "flex";
-            // Override save button for editing
             const saveBtn = document.getElementById("saveArticleBtn");
-            const newSaveHandler = () => publishArticle(false);
-            saveBtn.onclick = newSaveHandler;
+            saveBtn.onclick = () => publishArticle();
         }
     }
 
     function renderAdminList() {
         const container = document.getElementById("adminArticlesList");
         if(!container) return;
-        if(articles.length === 0) {
-            container.innerHTML = "<p>No articles yet.</p>";
-            return;
-        }
+        if(articles.length === 0) { container.innerHTML = "<p>No articles yet.</p>"; return; }
         container.innerHTML = articles.map(a => `
             <div class="admin-article-row">
                 <div class="admin-article-title">${escapeHtml(a.title)}</div>
-                <div class="card-meta">${a.category} • ${a.date} • by ${escapeHtml(a.author || "Anonymous")}</div>
+                <div class="card-meta">${a.category} • ${a.date} • by ${escapeHtml(a.author || "Admin")}</div>
                 <div class="admin-article-actions">
-                    <button class="adminEditBtn" data-id="${a.id}" style="background:#4a6fa5; color:white; border:none;">Edit</button>
-                    <button class="adminDeleteBtn" data-id="${a.id}" style="background:#e74c3c; color:white; border:none;">Delete</button>
+                    <button class="adminEditBtn" data-id="${a.id}" style="background:#4a6fa5; color:white; border:none; padding:6px 12px;">Edit</button>
+                    <button class="adminDeleteBtn" data-id="${a.id}" style="background:#e74c3c; color:white; border:none; padding:6px 12px;">Delete</button>
                 </div>
             </div>
         `).join('');
         
-        document.querySelectorAll('.adminEditBtn').forEach(btn => {
-            btn.addEventListener('click', () => editArticleById(btn.getAttribute('data-id')));
-        });
-        document.querySelectorAll('.adminDeleteBtn').forEach(btn => {
-            btn.addEventListener('click', () => deleteArticleById(btn.getAttribute('data-id')));
-        });
+        document.querySelectorAll('.adminEditBtn').forEach(btn => btn.addEventListener('click', () => editArticleById(btn.getAttribute('data-id'))));
+        document.querySelectorAll('.adminDeleteBtn').forEach(btn => btn.addEventListener('click', () => deleteArticleById(btn.getAttribute('data-id'))));
     }
 
     function renderCategoriesList() {
@@ -905,40 +918,6 @@
         alert("Website settings saved!");
     }
 
-    function updateUserUI() {
-        const authBtn = document.getElementById("authBtn");
-        const userDisplay = document.getElementById("userDisplay");
-        if(currentUser) { userDisplay.innerText = `Hello, ${currentUser.username}`; authBtn.innerText = "Sign Out"; }
-        else { userDisplay.innerText = ""; authBtn.innerText = "Sign In"; }
-    }
-
-    function showAuthModal(mode = "login") {
-        document.getElementById("authTitle").innerText = mode === "login" ? "Sign In" : "Create Account";
-        document.getElementById("authSubmitBtn").innerText = mode === "login" ? "Sign In" : "Sign Up";
-        document.getElementById("authSwitchText").innerText = mode === "login" ? "No account? Create one" : "Already have an account? Sign in";
-        document.getElementById("authSwitchText").onclick = () => showAuthModal(mode === "login" ? "register" : "login");
-        document.getElementById("authModal").style.display = "flex";
-        window.currentAuthMode = mode;
-    }
-
-    function handleAuthSubmit() {
-        const username = document.getElementById("authUsername").value.trim();
-        const password = document.getElementById("authPassword").value.trim();
-        if(!username || !password) return alert("Fill all fields");
-        if(window.currentAuthMode === "login") {
-            const user = users.find(u => u.username === username && u.password === password);
-            if(user) { currentUser = user; closeAuthModal(); renderAll(); }
-            else alert("Invalid credentials");
-        } else {
-            if(users.find(u => u.username === username)) return alert("Username exists");
-            const newUser = { id: Date.now().toString(), username, password };
-            users.push(newUser); saveAll(); currentUser = newUser; closeAuthModal(); renderAll();
-        }
-    }
-
-    function closeAuthModal() { document.getElementById("authModal").style.display = "none"; }
-    function logout() { currentUser = null; renderAll(); }
-
     function renderSidebarCategories() {
         const container = document.getElementById("sidebarCategories");
         container.innerHTML = `<button class="filter-chip active" data-cat="all">All</button>` + websiteCategories.map(c=>`<button class="filter-chip" data-cat="${c}">${c}</button>`).join('');
@@ -970,29 +949,11 @@
     document.getElementById("darkModeToggle").onclick = () => { document.body.classList.toggle("dark"); };
     document.getElementById("browseAllBtn").onclick = () => document.getElementById("articlesList").scrollIntoView({behavior:"smooth"});
     document.getElementById("searchInput").addEventListener("input", () => renderArticlesGrid());
-    document.getElementById("authBtn").onclick = () => { if(currentUser) logout(); else showAuthModal("login"); };
-    document.getElementById("authSubmitBtn").onclick = handleAuthSubmit;
-    document.getElementById("closeAuthBtn").onclick = closeAuthModal;
     document.getElementById("closeArticleBtn").onclick = () => document.getElementById("articleViewModal").style.display = "none";
     document.getElementById("copyArticleBtn").onclick = copyArticleText;
     document.getElementById("likeArticleBtn").onclick = likeArticle;
     document.getElementById("shareFBBtn").onclick = shareOnFB;
     document.getElementById("postCommentBtn").onclick = postComment;
-    
-    document.getElementById("createArticleBtn").onclick = () => { 
-        if(!currentUser) alert("Sign in to write articles"); 
-        else { 
-            currentEditingArticleId = null;
-            document.getElementById("editorTitle").innerText = "Create New Article";
-            document.getElementById("articleTitle").value = "";
-            document.getElementById("articleContent").value = "";
-            document.getElementById("articleTags").value = "";
-            document.getElementById("editorModal").style.display = "flex"; 
-            const saveBtn = document.getElementById("saveArticleBtn");
-            saveBtn.onclick = () => publishArticle(false);
-            renderCategorySelectors();
-        } 
-    };
     
     document.getElementById("cancelEditorBtn").onclick = () => {
         document.getElementById("editorModal").style.display = "none";
@@ -1018,13 +979,13 @@
     
     document.getElementById("adminPublishArticleBtn").onclick = () => {
         currentEditingArticleId = null;
-        document.getElementById("editorTitle").innerText = "Publish as Admin";
+        document.getElementById("editorTitle").innerText = "Publish New Article (Admin)";
         document.getElementById("articleTitle").value = "";
         document.getElementById("articleContent").value = "";
         document.getElementById("articleTags").value = "";
         document.getElementById("editorModal").style.display = "flex";
         const saveBtn = document.getElementById("saveArticleBtn");
-        saveBtn.onclick = () => publishArticle(true);
+        saveBtn.onclick = () => publishArticle();
         renderCategorySelectors();
     };
     
